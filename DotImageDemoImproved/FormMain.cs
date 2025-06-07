@@ -334,6 +334,13 @@ namespace DotImageDemoImproved
         private MenuItem menuThresholdDynamic;
         private MenuItem menuDithering;
         private StatusStrip statusStrip1;
+        private MenuItem menuView;
+        private MenuItem menuViewWidth;
+        private MenuItem menuViewHeight;
+        private MenuItem menuViewBest;
+        private MenuItem menuView100;
+        private MenuItem menuView50;
+        private MenuItem menuView150;
         private int _startTick;
 
 		#endregion
@@ -660,6 +667,13 @@ namespace DotImageDemoImproved
             this.menuItem15 = new System.Windows.Forms.MenuItem();
             this.cboFrameIndex = new System.Windows.Forms.ComboBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.menuView = new System.Windows.Forms.MenuItem();
+            this.menuViewWidth = new System.Windows.Forms.MenuItem();
+            this.menuViewHeight = new System.Windows.Forms.MenuItem();
+            this.menuViewBest = new System.Windows.Forms.MenuItem();
+            this.menuView100 = new System.Windows.Forms.MenuItem();
+            this.menuView50 = new System.Windows.Forms.MenuItem();
+            this.menuView150 = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPosition)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarLoadTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarMessage)).BeginInit();
@@ -867,6 +881,7 @@ namespace DotImageDemoImproved
             this.Viewer.AllowDrop = true;
             this.Viewer.AntialiasDisplay = Atalasoft.Imaging.WinControls.AntialiasDisplayMode.ScaleToGray;
             this.Viewer.Asynchronous = true;
+            this.Viewer.AutoZoom = Atalasoft.Imaging.WinControls.AutoZoomMode.FitToWidth;
             this.Viewer.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("Viewer.BackgroundImage")));
             this.Viewer.Centered = true;
             this.Viewer.DisplayProfile = null;
@@ -966,6 +981,7 @@ namespace DotImageDemoImproved
             // 
             this.mainMenu.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuFile,
+            this.menuView,
             this.menuEdit,
             this.menuImage,
             this.menuDraw,
@@ -1118,7 +1134,7 @@ namespace DotImageDemoImproved
             // 
             // menuEdit
             // 
-            this.menuEdit.Index = 1;
+            this.menuEdit.Index = 2;
             this.menuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuEditUndo,
             this.menuEditRedo,
@@ -1189,7 +1205,7 @@ namespace DotImageDemoImproved
             // menuImage
             // 
             this.menuImage.Enabled = false;
-            this.menuImage.Index = 2;
+            this.menuImage.Index = 3;
             this.menuImage.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuImageInformation,
             this.menuImageChangePixelFormat,
@@ -1326,7 +1342,7 @@ namespace DotImageDemoImproved
             // menuDraw
             // 
             this.menuDraw.Enabled = false;
-            this.menuDraw.Index = 3;
+            this.menuDraw.Index = 4;
             this.menuDraw.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuDrawLine,
             this.menuDrawLines,
@@ -1403,7 +1419,7 @@ namespace DotImageDemoImproved
             // menuCommands
             // 
             this.menuCommands.Enabled = false;
-            this.menuCommands.Index = 4;
+            this.menuCommands.Index = 5;
             this.menuCommands.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuChannels,
             this.menuEffects,
@@ -2589,7 +2605,7 @@ namespace DotImageDemoImproved
             // 
             // menuHelp
             // 
-            this.menuHelp.Index = 5;
+            this.menuHelp.Index = 6;
             this.menuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItem15});
             this.menuHelp.Text = "&Help";
@@ -2616,6 +2632,54 @@ namespace DotImageDemoImproved
             this.statusStrip1.Size = new System.Drawing.Size(857, 22);
             this.statusStrip1.TabIndex = 7;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // menuView
+            // 
+            this.menuView.Index = 1;
+            this.menuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuViewWidth,
+            this.menuViewBest,
+            this.menuViewHeight,
+            this.menuView100,
+            this.menuView50,
+            this.menuView150});
+            this.menuView.Text = "&View";
+            // 
+            // menuViewWidth
+            // 
+            this.menuViewWidth.Index = 0;
+            this.menuViewWidth.Text = "Fit to &Width";
+            this.menuViewWidth.Click += new System.EventHandler(this.menuViewWidth_Click);
+            // 
+            // menuViewHeight
+            // 
+            this.menuViewHeight.Index = 2;
+            this.menuViewHeight.Text = "Fit to &Height";
+            this.menuViewHeight.Click += new System.EventHandler(this.menuViewHeight_Click);
+            // 
+            // menuViewBest
+            // 
+            this.menuViewBest.Index = 1;
+            this.menuViewBest.Text = "&Best Fit (Shrink Only)";
+            this.menuViewBest.Click += new System.EventHandler(this.menuViewBest_Click);
+            // 
+            // menuView100
+            // 
+            this.menuView100.Index = 3;
+            this.menuView100.Text = "&100%";
+            this.menuView100.Click += new System.EventHandler(this.menuView100_Click);
+            // 
+            // menuView50
+            // 
+            this.menuView50.Index = 4;
+            this.menuView50.Text = "&50%";
+            this.menuView50.Click += new System.EventHandler(this.menuView50_Click);
+            // 
+            // menuView150
+            // 
+            this.menuView150.Index = 5;
+            this.menuView150.Text = "150%";
+            this.menuView150.Click += new System.EventHandler(this.menuView150_Click);
             // 
             // FormMain
             // 
@@ -2848,17 +2912,20 @@ namespace DotImageDemoImproved
 				case "Magnifier":
 					ClearMouseTools();
 					tbMagnifier.Pushed = true;
-					Viewer.MouseTool = MouseToolType.Magnifier;
+                    Viewer.AutoZoom = AutoZoomMode.None;
+                    Viewer.MouseTool = MouseToolType.Magnifier;
 					break;
 				case "Zoom":
 					ClearMouseTools();
 					tbZoom.Pushed = true;
-					Viewer.MouseTool = MouseToolType.Zoom;
+                    Viewer.AutoZoom = AutoZoomMode.None;
+                    Viewer.MouseTool = MouseToolType.Zoom;
 					break;
 				case "Zoom Selection":
 					ClearMouseTools();
 					tbZoomSelection.Pushed = true;
-					Viewer.MouseTool = MouseToolType.ZoomArea;
+                    Viewer.AutoZoom = AutoZoomMode.None;
+                    Viewer.MouseTool = MouseToolType.ZoomArea;
 					break;
 			}
 		}
@@ -3576,11 +3643,49 @@ namespace DotImageDemoImproved
 		{
 			Application.Exit();
 		}
-		#endregion
+        #endregion
 
-		#region Edit Menu
-		//undo the last image change
-		private void menuEditUndo_Click(object sender, System.EventArgs e)
+        #region View Menu
+        private void menuViewWidth_Click(object sender, EventArgs e)
+        {
+            ClearMouseTools();
+            Viewer.AutoZoom = AutoZoomMode.FitToWidth;
+        }
+
+        private void menuViewBest_Click(object sender, EventArgs e)
+        {
+            ClearMouseTools();
+            Viewer.AutoZoom = AutoZoomMode.BestFitShrinkOnly;
+        }
+
+        private void menuViewHeight_Click(object sender, EventArgs e)
+        {
+            ClearMouseTools();
+            Viewer.AutoZoom = AutoZoomMode.FitToHeight;
+        }
+
+        private void menuView100_Click(object sender, EventArgs e)
+        {
+            Viewer.AutoZoom = AutoZoomMode.None;
+            Viewer.Zoom = 1.0;
+        }
+
+        private void menuView50_Click(object sender, EventArgs e)
+        {
+            Viewer.AutoZoom = AutoZoomMode.None;
+            Viewer.Zoom = 0.5;
+        }
+
+        private void menuView150_Click(object sender, EventArgs e)
+        {
+            Viewer.AutoZoom = AutoZoomMode.None;
+            Viewer.Zoom = 1.5;
+        }
+        #endregion View Menu
+
+        #region Edit Menu
+        //undo the last image change
+        private void menuEditUndo_Click(object sender, System.EventArgs e)
 		{
 			Viewer.Undos.Undo();
 			UpdateUndoRedoInfo();
@@ -5109,13 +5214,13 @@ namespace DotImageDemoImproved
 			this.statusBarLoadTime.Text = "";
 		}
 
-		#endregion
 
 
+        #endregion
 
     }
 
-	public struct ImageFileLoadData
+    public struct ImageFileLoadData
 	{
 		public string FileName;
 		public int FrameIndex;

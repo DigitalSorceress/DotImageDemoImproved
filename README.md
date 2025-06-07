@@ -8,12 +8,13 @@ This is a copy of the Atalaosoft DotImage Demo available from [www.atalasoft.com
 - This version alters the default PdfDecoder
 - It's defaulted to 300 DPI instead of 200 DPI
 - In the Atalasoft demo, Pdf native (embedded) annotaions were set to RenderNone. In this we set to RenderAll. This is a minor change but is more practical for out of hte box use
-
-## Changes COMING SOON
 - View Changes
-	- Going to switch from default 100% to Fit to width
-	- Going to add a View menu to allow for changing of view settings
-	- going to add scrollbars to the WorkspaceView
+	- Default is now Fit to Width
+	- Added a new View menu to let you choose various auto zoom or manual zoom levels
+
+
+## Feature Requests / Ideas
+- Quadrilateral Warp - The default raw properties are ? OK ? if you want to explore the raw command, but really hard to get right. Considering a polygon select or other visual tool to let you rewarp the image. NOTE: may need to be 100% view as does weird stuff when in autozom mode
 
 ## How to use
 This demo source code has been available free to use and modify from Atalasoft for years, even thouth their SDK is closed/prorprietary. This means that this demo too is avilable under a permissive license (MIT License), but there are components that require an Atalasoft DotImge Document Imaging license to use.

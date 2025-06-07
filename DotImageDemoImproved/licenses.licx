@@ -1,0 +1,4 @@
+Atalasoft.Imaging.AtalaImage, Atalasoft.dotImage
+Atalasoft.Imaging.WinControls.WorkspaceViewer, Atalasoft.dotImage.WinControls
+Atalasoft.Imaging.Codec.Pdf.PdfDecoder, Atalasoft.dotImage.PdfReader
+

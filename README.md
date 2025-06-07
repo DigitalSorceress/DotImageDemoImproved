@@ -15,6 +15,9 @@ This is a copy of the Atalaosoft DotImage Demo available from [www.atalasoft.com
 
 ## Feature Requests / Ideas
 - Quadrilateral Warp - The default raw properties are ? OK ? if you want to explore the raw command, but really hard to get right. Considering a polygon select or other visual tool to let you rewarp the image. NOTE: may need to be 100% view as does weird stuff when in autozom mode
+- Selection double click - bring up a properties box to let you tweak selection?
+- Selection - when active p brings up properties.
+- selection kepresses: w increases heightby 1, shift w by 10, s decreases height, a decreases width d increases width
 
 ## How to use
 This demo source code has been available free to use and modify from Atalasoft for years, even thouth their SDK is closed/prorprietary. This means that this demo too is avilable under a permissive license (MIT License), but there are components that require an Atalasoft DotImge Document Imaging license to use.

@@ -1,24 +1,25 @@
-using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using System.Windows.Forms;
-using System.Data;
-using System.Threading;
+using Atalasoft.Annotate.UI;
 using Atalasoft.Imaging;
-using Atalasoft.Imaging.Drawing;
 using Atalasoft.Imaging.Codec;
 using Atalasoft.Imaging.Codec.Pdf;
-using Atalasoft.Imaging.Metadata;
+using Atalasoft.Imaging.Drawing;
 using Atalasoft.Imaging.ImageProcessing;
-using Atalasoft.Imaging.WinControls;
 using Atalasoft.Imaging.ImageProcessing.Channels;
-using Atalasoft.Imaging.ImageProcessing.Transforms;
 using Atalasoft.Imaging.ImageProcessing.Document;
 using Atalasoft.Imaging.ImageProcessing.Effects;
-using Atalasoft.Imaging.ImageProcessing.Filters;
 using Atalasoft.Imaging.ImageProcessing.Fft;
+using Atalasoft.Imaging.ImageProcessing.Filters;
+using Atalasoft.Imaging.ImageProcessing.Transforms;
+using Atalasoft.Imaging.Metadata;
+using Atalasoft.Imaging.WinControls;
+using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
 using System.IO;
+using System.Threading;
+using System.Windows.Forms;
 
 
 namespace DotImageDemoImproved
@@ -59,10 +60,13 @@ namespace DotImageDemoImproved
 			Polygon   = 7,
 			Text      = 8
 		}
-		#endregion
 
-		#region Designer Vars
-		private System.ComponentModel.IContainer components;
+        bool _shift = false;
+        bool _ctrl = false;
+        #endregion
+
+        #region Designer Vars
+        private System.ComponentModel.IContainer components;
 		private System.Windows.Forms.StatusBarPanel statusBarPosition;
 		private System.Windows.Forms.StatusBarPanel statusBarMessage;
 		private System.Windows.Forms.StatusBar statusInfo;
@@ -360,16 +364,137 @@ namespace DotImageDemoImproved
 			if (AtalaImage.Edition != LicenseEdition.Document)
 				this.menuDocument.Enabled = false;
 
-			// Scroll with the mouse wheel.
-			this.Viewer.MouseWheel += new MouseEventHandler(Viewer_MouseWheel);
+
+            // the next five items are specifically to enable mouse wheel scrolling and allow us to do horizontal scrolling oerride
+            // ====================================================================
+            KeyPreview = true;
+            MouseWheel += FormMain_MouseWheel;
+            KeyDown += FormMain_KeyDown;
+            KeyUp += FormMain_KeyUp;
+            Viewer.MouseWheelScrolling = true;
+            // ====================================================================
+
+            // Scroll with the mouse wheel.
+            //this.Viewer.MouseWheel += new MouseEventHandler(Viewer_MouseWheel);
 		}
 
+        #region MouseScrolling Modifiers
+        /// <summary>
+        /// This is going to be ONLY for horizontal scrolling
+        /// we have had to carefully enable.disable native mouse wheel scrolling in the viewer becasue that scrolling will
+        /// override/mess with horizontal if its on
+        /// 
+        /// so we have disabled the built in mouse wheel scrolling and now we can manually horizontally scroll
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void FormMain_MouseWheel(object sender, MouseEventArgs e)
+        {
+            // we could maybe be more elegant.. 
+            // Unfortunately, there's no documentAnnotationViewer1.Iamgecontrol.Focused property 
+            // so if we wanted to be more tight with this, we'd have to get the area of the image control
+            // and make our own decision about whether the mouse was inside or outside of it
+            // still it works
+            if (_shift)
+            {
+                int oldX = Viewer.ScrollPosition.X;
+                int oldY = Viewer.ScrollPosition.Y;
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
+                // Ok, we've got the old values - calculate the new X
+                int newX = oldX + e.Delta;
+
+                // this is the "safety dance" to prevent us from scrolling beyond the image
+                if (newX > 0)
+                {
+                    newX = 0;
+                }
+                else if (newX > Viewer.Image.Width)
+                {
+                    newX = Viewer.Image.Width;
+                }
+
+                // finally we set the new X (and keep the old Y as we are horizontal scrolling only)
+                Viewer.ScrollPosition = new Point(newX, oldY);
+            }
+            if (_ctrl)
+            {
+                if (Viewer.AutoZoom != AutoZoomMode.None)
+                {
+                    Viewer.AutoZoom = AutoZoomMode.None;
+                }
+
+                int delta = e.Delta;
+                double modifier = 1;
+                if (e.Delta > 0)
+                {
+                    modifier = Math.Abs((double)e.Delta / (double)100);
+                }
+                else
+                {
+                    modifier = Math.Abs((double)100 / (double)e.Delta);
+                }
+
+                if (modifier == 0)
+                {
+                    modifier = 1.0;
+                }
+                Viewer.Zoom = (Viewer.Zoom * modifier);
+            }
+        }
+
+        private void FormMain_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (!e.Shift)
+            {
+                //Console.WriteLine("SHIFT UP!");
+                _shift = false;
+                // we need to toggle the mouse wheel scrolling of the image control on
+                // when shift isn't being pressed
+                Viewer.MouseWheelScrolling = true;
+            }
+            if (!e.Control)
+            {
+                _ctrl = false;
+                Viewer.MouseWheelScrolling = true;
+            }
+            if (e.KeyCode == Keys.Space)
+            {
+                ClearMouseTools();
+                tbArrow.Pushed = true;
+            }
+        }
+
+        private void FormMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Shift)
+            {
+                //Console.WriteLine("SHIFT DOWN!");
+                _shift = true;
+                // need this to prevent our horizontal scrolling from interfering with defualt
+                Viewer.MouseWheelScrolling = false;
+            }
+            if (e.Control)
+            {
+                _ctrl = true;
+                Viewer.MouseWheelScrolling = false;
+            }
+            if (e.KeyCode == Keys.Space)
+            {
+                if (!tbPan.Pushed)
+                {
+                    ClearMouseTools();
+                    tbPan.Pushed = true;
+                    Viewer.MouseTool = MouseToolType.Pan;
+                }
+            }
+        }
+        #endregion MouseScrolling Modifiers
+
+        #region Windows Form Designer generated code
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        protected override void Dispose( bool disposing )
 		{
 			foreach (string file in _tempFiles)
 				File.Delete(file);
@@ -906,6 +1031,7 @@ namespace DotImageDemoImproved
             this.Viewer.MouseMovePixel += new System.Windows.Forms.MouseEventHandler(this.Viewer_MouseMovePixel);
             this.Viewer.DragDrop += new System.Windows.Forms.DragEventHandler(this.Viewer_DragDrop);
             this.Viewer.DragOver += new System.Windows.Forms.DragEventHandler(this.Viewer_DragOver);
+            this.Viewer.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Viewer_KeyDown);
             this.Viewer.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Viewer_MouseDown);
             // 
             // imagePrintDocument1
@@ -2763,7 +2889,7 @@ namespace DotImageDemoImproved
 			} 
 			else 
 			{
-				string pos = "Position:  " + e.X.ToString() + " x " + e.Y.ToString();
+				string pos = "Position:  " + e?.X.ToString() + " x " + e?.Y.ToString();
 				statusBarPosition.Text = pos;
 			}
 			statusBarPosition.ToolTipText = statusBarPosition.Text;
@@ -2829,21 +2955,22 @@ namespace DotImageDemoImproved
 			}
 		}
 
-		private void Viewer_MouseWheel(object sender, MouseEventArgs e)
-		{
-			if (this.Viewer.Image == null) return;
+        // replaced with MainForm events
+		//private void Viewer_MouseWheel(object sender, MouseEventArgs e)
+		//{
+		//	if (this.Viewer.Image == null) return;
 
-			Point pt = this.Viewer.ScrollPosition;
-			int jump = (this.Viewer.ClientSize.Height / 10);
+		//	Point pt = this.Viewer.ScrollPosition;
+		//	int jump = (this.Viewer.ClientSize.Height / 10);
 
-			if (e.Delta < 0)
-				pt.Y -= jump;
-			else
-				pt.Y += jump;
+		//	if (e.Delta < 0)
+		//		pt.Y -= jump;
+		//	else
+		//		pt.Y += jump;
 
-			if (pt.Y > 0) pt.Y = 0;
-			this.Viewer.ScrollPosition = pt;
-		}
+		//	if (pt.Y > 0) pt.Y = 0;
+		//	this.Viewer.ScrollPosition = pt;
+		//}
 
 		private void AtalaImage_ChangePixelFormat(object sender, PixelFormatChangeEventArgs e)
 		{
@@ -3194,7 +3321,6 @@ namespace DotImageDemoImproved
 		
 		private void SaveCurrentImage(UrlParameter url)
 		{
-
 			try 
 			{
 				//show the save dialog
@@ -5218,6 +5344,88 @@ namespace DotImageDemoImproved
 
         #endregion
 
+        private void Viewer_KeyDown(object sender, KeyEventArgs e)
+        {
+            // IF we are currently in selection mode then we will use keypresses to affect selection size
+            // WSAD  with shift for 10px no shift for 1
+            // p brings up properties to adjust directly
+            if (Viewer.MouseTool == MouseToolType.Selection)
+            {
+                Rubberband s = Viewer.Selection;
+                if (s != null)
+                {
+                    Rectangle b = s.Bounds;
+
+                    switch (e.KeyCode) 
+                    {
+                        case Keys.W:
+                            // do thing
+                            if (e.Shift)
+                            {
+                                b.Height += 10;
+                            } 
+                            else if (e.Control)
+                            {
+                                b.Y -= 1;
+                            }
+                            else
+                            {
+                                b.Height += 1;
+                            }
+                            break;
+                        case Keys.S:
+                            if (e.Shift)
+                            {
+                                b.Height -= 10;
+                            }
+                            else if (e.Control)
+                            {
+                                b.Y += 1;
+                            }
+                            else
+                            {
+                                b.Height -= 1;
+                            }
+                            break;
+                        case Keys.D:
+                            if (e.Shift)
+                            {
+                                b.Width += 10;
+                            }
+                            else if (e.Control)
+                            {
+                                b.X += 1;
+                            }
+                            else
+                            {
+                                b.Width += 1;
+                            }
+                            break;
+                        case Keys.A:
+                            if (e.Shift)
+                            {
+                                b.Width -= 10;
+                            }
+                            else if (e.Control)
+                            {
+                                b.X -= 1;
+                            }
+                            else
+                            {
+                                b.Width -= 1;
+                            }
+                            break;
+                        case Keys.P:
+                            // do thing
+                            MessageBox.Show("properties popup coming soon");
+                            break;
+                    }
+
+                    s.Bounds = b;
+                    Viewer_MouseMovePixel(null, null);
+                }
+            }
+        }
     }
 
     public struct ImageFileLoadData

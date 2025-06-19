@@ -337,7 +337,6 @@ namespace DotImageDemoImproved
         private MenuItem menuItemWhiteMarginCrop;
         private MenuItem menuThresholdDynamic;
         private MenuItem menuDithering;
-        private StatusStrip statusStrip1;
         private MenuItem menuView;
         private MenuItem menuViewWidth;
         private MenuItem menuViewHeight;
@@ -577,6 +576,13 @@ namespace DotImageDemoImproved
             this.menuFilePrintImage = new System.Windows.Forms.MenuItem();
             this.menuItem6 = new System.Windows.Forms.MenuItem();
             this.menuFileExit = new System.Windows.Forms.MenuItem();
+            this.menuView = new System.Windows.Forms.MenuItem();
+            this.menuViewWidth = new System.Windows.Forms.MenuItem();
+            this.menuViewBest = new System.Windows.Forms.MenuItem();
+            this.menuViewHeight = new System.Windows.Forms.MenuItem();
+            this.menuView100 = new System.Windows.Forms.MenuItem();
+            this.menuView50 = new System.Windows.Forms.MenuItem();
+            this.menuView150 = new System.Windows.Forms.MenuItem();
             this.menuEdit = new System.Windows.Forms.MenuItem();
             this.menuEditUndo = new System.Windows.Forms.MenuItem();
             this.menuEditRedo = new System.Windows.Forms.MenuItem();
@@ -791,14 +797,6 @@ namespace DotImageDemoImproved
             this.menuHelp = new System.Windows.Forms.MenuItem();
             this.menuItem15 = new System.Windows.Forms.MenuItem();
             this.cboFrameIndex = new System.Windows.Forms.ComboBox();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.menuView = new System.Windows.Forms.MenuItem();
-            this.menuViewWidth = new System.Windows.Forms.MenuItem();
-            this.menuViewHeight = new System.Windows.Forms.MenuItem();
-            this.menuViewBest = new System.Windows.Forms.MenuItem();
-            this.menuView100 = new System.Windows.Forms.MenuItem();
-            this.menuView50 = new System.Windows.Forms.MenuItem();
-            this.menuView150 = new System.Windows.Forms.MenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarPosition)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarLoadTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarMessage)).BeginInit();
@@ -1257,6 +1255,54 @@ namespace DotImageDemoImproved
             this.menuFileExit.Index = 13;
             this.menuFileExit.Text = "Exit";
             this.menuFileExit.Click += new System.EventHandler(this.menuFileExit_Click);
+            // 
+            // menuView
+            // 
+            this.menuView.Index = 1;
+            this.menuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuViewWidth,
+            this.menuViewBest,
+            this.menuViewHeight,
+            this.menuView100,
+            this.menuView50,
+            this.menuView150});
+            this.menuView.Text = "&View";
+            // 
+            // menuViewWidth
+            // 
+            this.menuViewWidth.Index = 0;
+            this.menuViewWidth.Text = "Fit to &Width";
+            this.menuViewWidth.Click += new System.EventHandler(this.menuViewWidth_Click);
+            // 
+            // menuViewBest
+            // 
+            this.menuViewBest.Index = 1;
+            this.menuViewBest.Text = "&Best Fit (Shrink Only)";
+            this.menuViewBest.Click += new System.EventHandler(this.menuViewBest_Click);
+            // 
+            // menuViewHeight
+            // 
+            this.menuViewHeight.Index = 2;
+            this.menuViewHeight.Text = "Fit to &Height";
+            this.menuViewHeight.Click += new System.EventHandler(this.menuViewHeight_Click);
+            // 
+            // menuView100
+            // 
+            this.menuView100.Index = 3;
+            this.menuView100.Text = "&100%";
+            this.menuView100.Click += new System.EventHandler(this.menuView100_Click);
+            // 
+            // menuView50
+            // 
+            this.menuView50.Index = 4;
+            this.menuView50.Text = "&50%";
+            this.menuView50.Click += new System.EventHandler(this.menuView50_Click);
+            // 
+            // menuView150
+            // 
+            this.menuView150.Index = 5;
+            this.menuView150.Text = "150%";
+            this.menuView150.Click += new System.EventHandler(this.menuView150_Click);
             // 
             // menuEdit
             // 
@@ -2751,67 +2797,10 @@ namespace DotImageDemoImproved
             this.cboFrameIndex.TabIndex = 6;
             this.cboFrameIndex.SelectedIndexChanged += new System.EventHandler(this.cboFrameIndex_SelectedIndexChanged);
             // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 429);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(857, 22);
-            this.statusStrip1.TabIndex = 7;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // menuView
-            // 
-            this.menuView.Index = 1;
-            this.menuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuViewWidth,
-            this.menuViewBest,
-            this.menuViewHeight,
-            this.menuView100,
-            this.menuView50,
-            this.menuView150});
-            this.menuView.Text = "&View";
-            // 
-            // menuViewWidth
-            // 
-            this.menuViewWidth.Index = 0;
-            this.menuViewWidth.Text = "Fit to &Width";
-            this.menuViewWidth.Click += new System.EventHandler(this.menuViewWidth_Click);
-            // 
-            // menuViewHeight
-            // 
-            this.menuViewHeight.Index = 2;
-            this.menuViewHeight.Text = "Fit to &Height";
-            this.menuViewHeight.Click += new System.EventHandler(this.menuViewHeight_Click);
-            // 
-            // menuViewBest
-            // 
-            this.menuViewBest.Index = 1;
-            this.menuViewBest.Text = "&Best Fit (Shrink Only)";
-            this.menuViewBest.Click += new System.EventHandler(this.menuViewBest_Click);
-            // 
-            // menuView100
-            // 
-            this.menuView100.Index = 3;
-            this.menuView100.Text = "&100%";
-            this.menuView100.Click += new System.EventHandler(this.menuView100_Click);
-            // 
-            // menuView50
-            // 
-            this.menuView50.Index = 4;
-            this.menuView50.Text = "&50%";
-            this.menuView50.Click += new System.EventHandler(this.menuView50_Click);
-            // 
-            // menuView150
-            // 
-            this.menuView150.Index = 5;
-            this.menuView150.Text = "150%";
-            this.menuView150.Click += new System.EventHandler(this.menuView150_Click);
-            // 
             // FormMain
             // 
             this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
             this.ClientSize = new System.Drawing.Size(857, 473);
-            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.cboFrameIndex);
             this.Controls.Add(this.Viewer);
             this.Controls.Add(this.progressBar1);
@@ -2825,7 +2814,6 @@ namespace DotImageDemoImproved
             ((System.ComponentModel.ISupportInitialize)(this.statusBarMessage)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.statusBarProgress)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
 		}
 		

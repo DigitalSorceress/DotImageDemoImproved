@@ -371,6 +371,7 @@ Ankh.NoLoad
 *.bak
 
 # Special ones I want to hold off
+*.dll.licenses
 zzNO-GIT
 _KILL
 _ARCHIVES
